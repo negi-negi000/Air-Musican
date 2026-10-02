@@ -1,3 +1,3 @@
-必要なRubyモジュール
+"""必要なRubyモジュール"""
 
 gem install midilib
