@@ -24,37 +24,34 @@ struct FingerData {
     int is_striking;
 };
 
-// C++ <-> Ruby 共有データ構造体
 struct AirMusicianData {
-    int mode;          // 0: Piano, 1: Guitar
-    int play_style;    // 0: Free Mode, 1: Game/Practice Mode
+    int mode;
+    int play_style;
     int count;
     int error;
     int is_strummed;
     int strum_velocity;
     int pitch_bend;
     
-    // ゲーム用データ
     int score;
     int combo;
-    int judge_type;    // 0: None, 1: PERFECT, 2: GREAT, 3: MISS
+    int judge_type;
     
     FingerData fingers[10];
 };
 
-// ガイド・ノーツ情報（Rubyから渡す）
 struct NoteGuide {
     int midi_note;
     int key_index;
     int string_index;
-    double time_diff; // 判定ラインまでの到達時間差 (秒)
+    double time_diff;
 };
 
-static cv::VideoCapture* g_cap0 = nullptr; // Camera 0 (Front / Main)
-static cv::VideoCapture* g_cap1 = nullptr; // Camera 1 (Side / Height)
+static cv::VideoCapture* g_cap0 = nullptr;
+static cv::VideoCapture* g_cap1 = nullptr;
 
-static int g_current_mode = 0;       // Piano or Guitar
-static int g_current_play_style = 0; // Free or Game
+static int g_current_mode = 0;
+static int g_current_play_style = 0;
 static int g_prev_right_y = -1;
 static int g_base_left_y = -1;
 
@@ -95,7 +92,6 @@ int getCentersByHSV(const cv::Mat& frame, const cv::Scalar& low, const cv::Scala
     return static_cast<int>(out_pts.size());
 }
 
-// ギター用：6弦 12フレットの指板ガイド線を描画
 void draw_guitar_fretboard(cv::Mat& frame) {
     if (frame.empty()) return;
 
@@ -118,7 +114,6 @@ void draw_guitar_fretboard(cv::Mat& frame) {
     }
 }
 
-// ピアノ鍵盤の区切り線・音名描画
 void draw_piano_keyboard_overlay(cv::Mat& frame, int total_keys = 21) {
     if (frame.empty()) return;
     int height = frame.rows;
@@ -204,7 +199,6 @@ DLLEXPORT void process_frame(void* buffer) {
         return;
     }
 
-    // ピアノモード
     if (g_current_mode == 0) {
         draw_piano_keyboard_overlay(frame0);
 
@@ -274,7 +268,6 @@ DLLEXPORT void process_frame(void* buffer) {
 
         cv::imshow("Air Musician - Piano Front (Cam 0)", frame0);
     }
-    // ギターモード
     else if (g_current_mode == 1) {
         draw_guitar_fretboard(frame0);
 
